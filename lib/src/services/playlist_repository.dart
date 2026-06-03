@@ -21,7 +21,40 @@ class PlaylistRepository {
       }
       channels.addAll(_parser.parse(response.body, sourceId: source.id));
     }
-    return channels;
+    return _deduplicate(channels);
+  }
+
+  List<Channel> _deduplicate(List<Channel> channels) {
+    final byKey = <String, Channel>{};
+
+    for (final channel in channels) {
+      final key = _dedupeKey(channel);
+      byKey.putIfAbsent(key, () => channel);
+    }
+
+    return byKey.values.toList();
+  }
+
+  String _dedupeKey(Channel channel) {
+    final tvgId = channel.tvgId?.trim().toLowerCase();
+    if (tvgId != null && tvgId.isNotEmpty) {
+      return 'tvg-id:${channel.contentType.name}:$tvgId';
+    }
+
+    final tvgName = channel.tvgName?.trim().toLowerCase();
+    if (tvgName != null && tvgName.isNotEmpty) {
+      return 'tvg-name:${channel.contentType.name}:$tvgName';
+    }
+
+    return 'name:${channel.contentType.name}:${_normalizeName(channel.name)}';
+  }
+
+  String _normalizeName(String name) {
+    return name
+        .toLowerCase()
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .replaceAll(RegExp(r'\s*(hd|fhd|uhd|4k)\s*$'), '')
+        .trim();
   }
 }
 

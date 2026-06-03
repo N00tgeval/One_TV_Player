@@ -24,6 +24,7 @@ class M3uParser {
             id: id,
             name: pending.name,
             url: line,
+            contentType: _inferContentType(pending.group),
             group: pending.group,
             logoUrl: pending.logoUrl,
             tvgId: pending.tvgId,
@@ -62,6 +63,23 @@ class M3uParser {
 
   String _stableId(String? sourceId, String name, String url) {
     return '${sourceId ?? 'local'}:${name.trim().toLowerCase()}:${url.hashCode}';
+  }
+
+  ContentType _inferContentType(String group) {
+    final normalized = group.toLowerCase();
+    if (normalized.contains('series') ||
+        normalized.contains('serie') ||
+        normalized.contains('shows')) {
+      return ContentType.series;
+    }
+    if (normalized.contains('movies') ||
+        normalized.contains('movie') ||
+        normalized.contains('films') ||
+        normalized.contains('film') ||
+        normalized.contains('vod')) {
+      return ContentType.movie;
+    }
+    return ContentType.live;
   }
 }
 

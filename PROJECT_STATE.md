@@ -21,6 +21,14 @@ premium walls.
 - Optional public FAST presets can be shown as choices, but should be manually
   enabled by the user.
 - Settings are local first, but should be structured so sync can be added later.
+- UI should only show currently useful features. Do not show disabled
+  placeholder sections just to advertise future functionality.
+- Movies and Series can be first-level sections, but only when matching content
+  exists in the active sources.
+- Movies, Series, and VOD should support preferred language/subtitle filters
+  when source metadata is reliable enough.
+- Adult content should be hideable or protected behind a local PIN when source
+  metadata or category names make classification possible.
 
 ## App Name
 
@@ -84,8 +92,14 @@ Current implemented features:
 - M3U/M3U8 parser.
 - Playlist source model.
 - Channel model.
+- Basic content type model for live TV, movies, and series.
 - Local settings/cache store.
 - Playlist repository that downloads enabled sources.
+- Playlist repository merges multiple enabled sources and deduplicates channels.
+- Current deduplication keeps the first matching channel. Later, duplicate
+  channel URLs should be preserved as alternative/fallback streams.
+- Sources/providers should later support multiple server/base URLs where the
+  provider offers mirrors or fallback endpoints.
 - Optional FAST presets:
   - IPTV-org public playlist
   - Free-TV public playlist
@@ -93,7 +107,10 @@ Current implemented features:
 - Add M3U URL screen.
 - Enable/disable public FAST presets.
 - Favorites.
+- Basic channel search should be available across enabled sources.
 - Fullscreen live player screen using `media_kit`.
+- Player should later expose an action bar on pause/OK/Menu, with actions
+  adapted to live TV, movies, and series.
 - Android manifest adjusted for Android TV:
   - `LEANBACK_LAUNCHER`
   - touchscreen not required
@@ -170,8 +187,18 @@ flutter run
 5. Test remote/D-pad navigation.
 6. Replace the current basic channel grid with a more OTT Navigator/IPTV One
    style TV-first layout:
+   - collapsible left icon sidebar
+   - sidebar expands with text labels when focused
+   - only show working/useful destinations
+   - show Movies/Series only when content exists
    - categories/groups on the left
    - channels on the right
+   - mini-player preview while browsing live channels
+   - no mini-player preview for Movies, Series, or VOD
+   - second OK opens fullscreen playback
+   - now/next guide information near the preview when EPG is available
+   - Series should use a season/episode detail layout with poster/artwork,
+     playback area, and metadata, not the live TV browse layout
    - strong focus states
    - favorites near the top
    - fast browsing with D-pad
@@ -181,8 +208,14 @@ flutter run
    - enable/disable source
    - refresh source
    - clear cache
-8. Add import/export settings before cloud sync.
-9. Add settings sync later using a TV-friendly pairing-code flow.
+   - preserve duplicate channel URLs as fallback streams
+   - support multiple server/base URLs per provider where available
+8. Add automatic source refresh on startup, with per-source refresh settings.
+9. Add custom HTTP headers per source where needed, especially User-Agent.
+10. Add import/export settings before cloud sync.
+11. Add settings sync later using a TV-friendly pairing-code flow.
+12. Add Xtream Codes source support, because it is expected to be the primary
+    source type for richer live TV, Movies, Series, and metadata flows.
 
 ## Roadmap
 
@@ -190,24 +223,45 @@ flutter run
 
 - TV-first home screen.
 - M3U/M3U8 URL sources.
+- Xtream Codes source support for live TV, movies, series, and richer metadata.
 - Optional public FAST presets.
 - Playlist download and local cache.
+- Merge and deduplicate multiple enabled sources.
 - Local app settings.
 - Favorites.
+- Channel search across enabled sources.
+- Live/movie/series content type detection where playlist metadata is clear.
+- Live TV preview/mini-player flow before fullscreen playback.
 - Fullscreen live player.
 - Basic remote, keyboard, and touch navigation.
 
 ### Phase 2: Source and Settings Management
 
 - Hide/show groups.
+- Filter Movies, Series, and VOD by preferred audio/subtitle languages where
+  metadata supports it.
+- Series detail layout with poster/artwork, seasons, episodes, playback area,
+  and episode metadata.
+- Hide or PIN-protect adult categories/content.
+- Automatic source refresh on app startup, with per-source refresh settings.
+- Custom HTTP headers per source where needed, especially User-Agent.
 - Rename sources.
 - Enable/disable sources.
 - Delete sources.
 - Clear playlist cache.
+- Preserve duplicate channel URLs as alternative/fallback streams instead of
+  only dropping duplicates.
+- Support multiple server/base URLs per provider where available, especially
+  for Xtream-style sources.
 - Import/export settings as a local file.
+- Recently viewed live channels.
 - Keep settings as one sync-ready model:
   - sources
+  - content type preferences
+  - language and subtitle filter preferences
+  - adult content visibility and PIN settings
   - favorites
+  - recently viewed
   - hidden groups
   - player preferences
   - UI preferences
@@ -223,15 +277,31 @@ flutter run
 
 ### Phase 4: Guide and Provider Features
 
-- Xtream Codes login.
 - XMLTV/EPG loading and cache.
 - Now/next metadata in the channel list.
+- Now/next metadata near the live preview mini-player.
 - OSD with current program information.
+- Player action bar with content-type-specific controls.
 - Audio/subtitle selection where supported by the player/platform.
+- External subtitle lookup for movies and series when reliable metadata is
+  available.
+- Embedded subtitle support for live streams where the stream/player exposes
+  subtitle tracks.
 - Aspect ratio options.
+- Radio/audio playlist support if enough real sources need it.
+- Catch-up/archive support where provider metadata supports it.
 
 ### Phase 5: Platform Expansion
 
 - Polish Android TV and Google TV Streamer 4K first.
 - Refine Android mobile, iOS, and Windows UX.
 - Investigate TizenOS as a separate path later.
+
+### Release Preparation
+
+- Prepare store listing text before submitting to any store.
+- Keep listing copy neutral: playlist/player app, not a content provider.
+- Clearly state that users add their own legal sources.
+- Avoid language that implies access to paid, pirated, or grey-area content.
+- Prepare privacy policy and data safety answers.
+- Prepare first-start legal/privacy notice inside the app.
