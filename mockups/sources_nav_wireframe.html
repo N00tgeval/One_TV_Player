@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One TV Player - Navigation Wireframe</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080d10;
+      --panel: #101a20;
+      --panel-2: #0f171c;
+      --line: #263842;
+      --muted: #91a3aa;
+      --text: #f2f7f4;
+      --mint: #7ee0b2;
+      --focus: #eefcf4;
+      --focus-text: #06110c;
+      --warn: #f2cf66;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #05080a;
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      display: grid;
+      place-items: center;
+    }
+
+    .frame {
+      width: min(1280px, 96vw);
+      aspect-ratio: 16 / 9;
+      background: var(--bg);
+      border: 1px solid #1c2a30;
+      display: grid;
+      grid-template-columns: 84px 280px 1fr;
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .48);
+    }
+
+    .sidebar {
+      background: #0d1418;
+      border-right: 1px solid #223038;
+      padding: 18px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mark {
+      width: 54px;
+      height: 54px;
+      border: 2px solid #2ba779;
+      border-radius: 8px;
+      color: #bfffe2;
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      font-weight: 900;
+      margin: 0 auto 18px;
+      background: #12221d;
+    }
+
+    .nav-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .bottom {
+      margin-top: auto;
+    }
+
+    .nav-item {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: var(--panel);
+      color: #dbe8e2;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+      position: relative;
+    }
+
+    .nav-item.selected {
+      background: var(--focus);
+      color: var(--focus-text);
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 4px rgba(126, 224, 178, .18);
+    }
+
+    .nav-item.dim {
+      color: #607078;
+    }
+
+    .nav-item::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 68px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      opacity: .7;
+      white-space: nowrap;
+    }
+
+    .categories {
+      background: var(--panel-2);
+      border-right: 1px solid #223038;
+      padding: 22px 14px;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .list {
+      margin-top: 24px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .row {
+      height: 58px;
+      border-radius: 8px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid transparent;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .row.focus {
+      background: var(--focus);
+      color: var(--focus-text);
+      border: 3px solid #fff;
+    }
+
+    .row .count {
+      margin-left: auto;
+      color: inherit;
+      opacity: .65;
+      font-weight: 800;
+    }
+
+    .content {
+      min-width: 0;
+      padding: 24px 28px;
+      display: grid;
+      grid-template-rows: auto 220px 1fr;
+      gap: 18px;
+    }
+
+    .topline {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .topline h2 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    .hint {
+      margin-left: auto;
+      color: var(--muted);
+      font-weight: 800;
+      padding-top: 8px;
+    }
+
+    .preview {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      min-height: 0;
+    }
+
+    .video {
+      display: grid;
+      place-items: center;
+      color: #c6d2d6;
+      font-weight: 800;
+      background:
+        linear-gradient(145deg, rgba(126, 224, 178, .12), transparent 40%),
+        #020303;
+    }
+
+    .preview-info {
+      border-left: 1px solid var(--line);
+      padding: 18px;
+      background: #0d1418;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .preview-title {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .preview-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .button {
+      height: 44px;
+      border-radius: 8px;
+      border: 1px solid #3d555f;
+      padding: 0 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      background: #18262c;
+      color: #fff;
+    }
+
+    .button.primary {
+      background: #8ee2b9;
+      color: #092016;
+      border-color: #fff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .channel {
+      min-height: 92px;
+      border-radius: 8px;
+      background: #121d23;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px;
+    }
+
+    .channel.focus {
+      background: var(--focus);
+      color: var(--focus-text);
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 4px rgba(126, 224, 178, .18);
+    }
+
+    .logo {
+      flex: 0 0 auto;
+      width: 58px;
+      height: 58px;
+      border-radius: 8px;
+      background: #1b2a31;
+      border: 1px solid #30424a;
+      display: grid;
+      place-items: center;
+      color: var(--mint);
+      font-weight: 900;
+    }
+
+    .channel.focus .logo {
+      background: #d6eee2;
+      color: #183a2c;
+    }
+
+    .meta {
+      min-width: 0;
+    }
+
+    .name {
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .group {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .channel.focus .group {
+      color: #254737;
+    }
+
+    @media (max-width: 900px) {
+      .frame {
+        grid-template-columns: 72px 220px 1fr;
+      }
+      .preview {
+        grid-template-columns: 1fr;
+      }
+      .preview-info {
+        display: none;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="frame" aria-label="One TV Player wireframe">
+    <aside class="sidebar">
+      <div class="mark">1</div>
+      <nav class="nav-group" aria-label="Watch">
+        <div class="nav-item selected" data-label="Live TV">▣</div>
+        <div class="nav-item dim" data-label="Series">▤</div>
+        <div class="nav-item dim" data-label="Movies">▶</div>
+        <div class="nav-item dim" data-label="VOD">▥</div>
+        <div class="nav-item" data-label="Refresh">↻</div>
+      </nav>
+      <nav class="nav-group bottom" aria-label="Manage">
+        <div class="nav-item" data-label="Sources">⌘</div>
+        <div class="nav-item" data-label="Settings">⚙</div>
+      </nav>
+    </aside>
+
+    <section class="categories">
+      <h1>One TV Player</h1>
+      <div class="sub">Live categories</div>
+      <div class="list">
+        <div class="row focus"><span>▦</span><strong>All</strong><span class="count">128</span></div>
+        <div class="row"><span>★</span><strong>Favorites</strong><span class="count">7</span></div>
+        <div class="row"><span>▦</span><strong>Music</strong><span class="count">24</span></div>
+        <div class="row"><span>▦</span><strong>News</strong><span class="count">18</span></div>
+        <div class="row"><span>▦</span><strong>Sports</strong><span class="count">12</span></div>
+        <div class="row"><span>▦</span><strong>Kids</strong><span class="count">9</span></div>
+      </div>
+    </section>
+
+    <section class="content">
+      <header class="topline">
+        <div>
+          <h2>Live TV</h2>
+          <div class="sub">128 channels - 3 hidden</div>
+        </div>
+        <div class="hint">OK preview • OK again fullscreen</div>
+      </header>
+
+      <section class="preview">
+        <div class="video">Live preview</div>
+        <div class="preview-info">
+          <div class="preview-title">XITE 80s Flashback</div>
+          <div class="sub">Music • Samsung TV Plus demo</div>
+          <div class="preview-actions">
+            <div class="button primary">⛶ Open</div>
+            <div class="button">☆ Favorite</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="channel focus">
+          <div class="logo">TV</div>
+          <div class="meta">
+            <div class="name">XITE 80s Flashback</div>
+            <div class="group">Music</div>
+          </div>
+        </article>
+        <article class="channel">
+          <div class="logo">TV</div>
+          <div class="meta">
+            <div class="name">XITE 90s Throwback</div>
+            <div class="group">Music</div>
+          </div>
+        </article>
+        <article class="channel">
+          <div class="logo">TV</div>
+          <div class="meta">
+            <div class="name">Classic Hits</div>
+            <div class="group">Music</div>
+          </div>
+        </article>
+        <article class="channel">
+          <div class="logo">TV</div>
+          <div class="meta">
+            <div class="name">World News</div>
+            <div class="group">News</div>
+          </div>
+        </article>
+        <article class="channel">
+          <div class="logo">TV</div>
+          <div class="meta">
+            <div class="name">Documentary Channel</div>
+            <div class="group">Docs</div>
+          </div>
+        </article>
+        <article class="channel">
+          <div class="logo">TV</div>
+          <div class="meta">
+            <div class="name">Action Sports</div>
+            <div class="group">Sports</div>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

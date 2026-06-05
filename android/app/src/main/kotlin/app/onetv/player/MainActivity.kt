@@ -1,4 +1,4 @@
-package com.example.one_tv_player
+package app.onetv.player
 
 import io.flutter.embedding.android.FlutterActivity
 
